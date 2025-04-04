@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Story Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        textarea {
+            width: 80%;
+            height: 100px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #story {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            text-align: left;
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AI Story Generator</h1>
+    <p>Enter a prompt and get a unique story!</p>
+
+    <textarea id="prompt" placeholder="Enter your story idea..."></textarea><br>
+    <button onclick="generateStory()">Generate Story</button>
+
+    <h2>Generated Story:</h2>
+    <div id="story">Your AI-generated story will appear here...</div>
+
+    <script>
+        async function generateStory() {
+        const prompt = document.getElementById("prompt").value;
+        const storyDiv = document.getElementById("story");
+
+        if (!prompt) {
+          alert("Please enter a prompt!");
+          return;
+        }
+
+        storyDiv.innerHTML = "Generating story... ⏳";
+
+        try {
+          const response = await fetch("http://localhost:5500/generate", {  // ✅ FIXED PORT NUMBER
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ prompt })
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        storyDiv.innerHTML = data.story || "Error generating story.";
+        }   catch (error) {
+          console.error("Error:", error);
+          storyDiv.innerHTML = "Failed to generate story. Please try again.";
+        }
+      }
+
+        
+    </script>
+
+</body>
+</html>
